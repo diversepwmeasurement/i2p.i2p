@@ -1,23 +1,21 @@
-# File: .github/workflows/repo-sync.yml
-
-on:
-  schedule:
-  - cron:  "*/5 * * * *"
-  workflow_dispatch:
-
 jobs:
   repo-sync:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
+    - continue-on-error: true
+      uses: actions/checkout@v4
       with:
         persist-credentials: false
-    - name: repo-sync
+    - continue-on-error: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      name: repo-sync
       uses: repo-sync/github-sync@v2
       with:
-        source_repo: "https://i2pgit.org/i2p-hackers/i2p.i2p"
-        source_branch: "master"
-        destination_branch: "master"
+        destination_branch: master
         github_token: ${{ secrets.PAT }}
+        source_branch: master
+        source_repo: https://i2pgit.org/i2p-hackers/i2p.i2p
+on:
+  repository_dispatch:
+    types: trigger-ga___github-sync.yml
